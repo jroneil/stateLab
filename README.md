@@ -2,6 +2,24 @@
 
 A demonstration platform for exploring **Server-Authoritative State Management**, **Optimistic Concurrency**, and **Workflow Enforcement**.
 
+### Dashboard: State at a Glance
+![State Lab Dashboard](docs/images/statelab-dashboard.png)
+
+The dashboard shows workflow state distribution and state aging.  
+State metrics are calculated server-side to avoid derived client inconsistencies.
+
+### Work Orders: Lifecycle Visibility
+![Work Order List](docs/images/statelab-wo.png)
+
+Work orders are grouped and filtered by lifecycle state.  
+The UI reflects backend state without attempting to infer transitions.
+
+### Work Order Detail: Server-Authoritative State
+![Work Order Detail](docs/images/statelab-wo-detail.png)
+
+All lifecycle actions are intentionally visible to demonstrate server-side enforcement.  
+Invalid transitions are rejected by the backend state machine.
+
 ## What This Lab Demonstrates
 
 This project is a focused laboratory for exploring the coordination between backend state machines and frontend UIs. It demonstrates:
@@ -53,17 +71,16 @@ The client is a **Thin Reflection** of the server state.
 - Applies: `{ action, notes }`.
 - Returns: Updated WorkOrder + new `ETag`.
 - Returns: **409 Conflict** if the ETag is stale.
-+
-+## What This Lab Intentionally Does NOT Include
-+
-+To keep the focus strictly on state coordination and concurrency, the following are omitted by design:
-+
-+- **Authentication/Authorization**: All actions are "anonymous" for the purpose of the lab.
-+- **Background Jobs**: All transitions are synchronous and immediate.
-+- **Asynchronous Messaging**: No Kafka, RabbitMQ, or event-driven microservices.
-+- **Reactive Streams**: Uses standard Spring Web patterns rather than WebFlux/Project Reactor.
-+- **AI / RAG**: This is a deterministic system; no LLMs or probabilistic logic are used.
-+- **Complex UI State**: No Redux or heavy client-side state management; the UI is a thin reflection of the server.
+## What This Lab Intentionally Does NOT Include
+
+To keep the focus strictly on state coordination and concurrency, the following are omitted by design:
+
+- **Authentication/Authorization**: All actions are "anonymous" for the purpose of the lab.
+- **Background Jobs**: All transitions are synchronous and immediate.
+- **Asynchronous Messaging**: No Kafka, RabbitMQ, or event-driven microservices.
+- **Reactive Streams**: Uses standard Spring Web patterns rather than WebFlux/Project Reactor.
+- **AI / RAG**: This is a deterministic system; no LLMs or probabilistic logic are used.
+- **Complex UI State**: No Redux or heavy client-side state management; the UI is a thin reflection of the server.
 
 ## Why not CRUD? (Transition vs. PUT)
 
