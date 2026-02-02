@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: statelab-db
+    environment:
+      POSTGRES_USER: statelab
+      POSTGRES_PASSWORD: statelab123
+      POSTGRES_DB: statelab
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - statelab-net
+
+  backend:
+    build: ./backend/statelab
+    container_name: statelab-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/statelab
+      SPRING_DATASOURCE_USERNAME: statelab
+      SPRING_DATASOURCE_PASSWORD: statelab123
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    depends_on:
+      - postgres
+    networks:
+      - statelab-net
+
+  frontend:
+    build: ./frontend/state-lab
+    container_name: statelab-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080/api
+      INTERNAL_API_URL: http://backend:8080/api
+    depends_on:
+      - backend
+    networks:
+      - statelab-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: statelab-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@statelab.local
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    networks:
+      - statelab-net
+
+networks:
+  statelab-net:
+    driver: bridge
+
+volumes:
+  postgres_data:
